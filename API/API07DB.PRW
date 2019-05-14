@@ -4,7 +4,7 @@
 #Include "RestFul.CH"
 #Include "FileIo.CH"
 
-/*/{Protheus.doc} VENDAS
+/*/{Protheus.doc} Vendas Por Condição de Pagamento
 Definicao da estrutura do webservice
 @author Diogo Barros
 @since 29/04/2019
@@ -15,31 +15,31 @@ Return
 
 WSRESTFUL VENDASPAG DESCRIPTION "Servico REST para Consulta das Vendas por Condicao de Pagamento"
 		
-	WSDATA CODPAG  As String // --> String que vamos receber via URL
+	WSDATA CONDPAG  As String // --> String que vamos receber via URL
  
 	WSMETHOD GET DESCRIPTION "Retorna as vendas conforme condicao de pagamento informado no parametro."; 
-	WSSYNTAX "/VENDASPAG/{CODPAG}" 
+	WSSYNTAX "/VENDASPAG/{CONDPAG}" 
 
 END WSRESTFUL
 
 
 /*/ Metodo retorna todas as vendas conforme condicao de pagamento. /*/
-WSMETHOD GET WSRECEIVE CODPAG WSSERVICE VENDASPAG
+WSMETHOD GET WSRECEIVE CONDPAG WSSERVICE VENDASPAG
 
-	Local _cCodPag  	:= Self:CODPAG
+	Local _cCondPag  	:= Self:CONDPAG
 	Local _aArea		:= GetArea()
 	Local _oObjCPag		:= Nil
 	//Local _cStatus		:= ""
 	Local _cJson		:= ""
 	//Local _aInfo		:= {}
 	Local _lRet			:= .F.
-	
+	qqout(_cCondPag)
 
 	// --> Define o tipo de retorno do metodo
 	::SetContentType("application/json")		
 	
-	If !Empty(_cCodPag)
-		_oObjCPag := VendCondPag():ListCondPag(_cCodPag)
+	If !Empty(_cCondPag)
+		_oObjCPag := VendCondPag():ListCondPag(_cCondPag)
 	Else
 		SetRestFault(404,"E necessario informar condicao de pagamento!")				
 	EndIf

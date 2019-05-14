@@ -4,37 +4,38 @@
 #Include "RestFul.CH"
 #Include "FileIo.CH"
 
-User Function API07DBA()
+User Function API09DBA()
 Return
 
-Class VendCondPag
+Class FluxoCaixa
 	
-	Data cCondPag	As String
-	Data cNome		As String
+	Data dDatDe		As Data
+	Data dDatAte	As Data
 	Data aInfo		As Array
 	
-	Method ListCondPag() Constructor
+	Method ListFluxo() Constructor
 	
 EndClass
 
 // Lista Vendas da data conforme parametro
-Method ListCondPag(_cCondPag) Class VendCondPag
+Method ListFluxo(_dDatDe, _dDatAte) Class VendasDia
 
 	Local _cArr := {}
-	::cCondPag 	:= _cCondPag
-	
+	::dDatDe  := STOD(_dDatDe)
+	::dDatAte := STOD(_dDatAte)
+
 	DbSelectArea("SC5")
-	SC5->( DbSetOrder(8) )
-	
-	If SC5->( DbSeek( xFilial("SC5") + ::cCondPag ) )				
-	
+	SC5->( DbSetOrder(2) )
+
+	If SC5->( DbSeek( xFilial("SC5") + DTOS(::dDat) ) )				
+		
 		//SC5->( dbGoTop() )
-		While (SC5->( !EOF()) .AND. SC5->C5_CONDPAG == ::cCondPag)
+		While (SC5->( !EOF()) .AND. SC5->C5_EMISSAO == ::dDat)
 			
 			::cNome := Posicione("SA3", 1, xFilial("SA3") + SC5->C5_VEND1, "A3_NREDUZ" )
 			::cNome := IIF(Empty(::cNome),"S/N",::cNome)
 			
-			aAdd(_cArr, { SC5->C5_CONDPAG, SC5->C5_NUM, SC5->C5_TIPO, SC5->C5_CLIENTE, SC5->C5_LOJACLI, DTOS(SC5->C5_EMISSAO), SC5->C5_VEND1, ::cNome })
+			aAdd(_cArr, { DTOS(SC5->C5_EMISSAO), SC5->C5_NUM, SC5->C5_TIPO, SC5->C5_CLIENTE, SC5->C5_LOJACLI, SC5->C5_CONDPAG, SC5->C5_VEND1, ::cNome })
 			
 			SC5->( DbSkip() )
 
